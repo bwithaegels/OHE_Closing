@@ -43,33 +43,63 @@ $manualTasks = manual_taken_for_period($period);
         <button type="button" id="taak-toevoegen-knop" title="Taak toevoegen">+</button>
     </div>
 
-    <form id="taak-formulier" hidden>
-        <div class="veld">
-            <label for="taak-titel">Taak</label>
-            <input type="text" id="taak-titel" name="title" required>
-        </div>
-        <div class="veld veld-inline">
-            <label><input type="radio" name="kind" value="once" checked> Eenmalig (enkel periode <?= h($period) ?>)</label>
-            <label><input type="radio" name="kind" value="recurring"> Terugkerend tot en met</label>
-            <input type="month" id="taak-eind-periode" name="end_period" disabled>
-        </div>
-        <div class="veld veld-inline">
-            <label for="taak-eigenaar">Eigenaar</label>
-            <select id="taak-eigenaar" name="owner" required>
-                <option value="" disabled selected>Kies...</option>
-                <?php foreach (TAAK_EIGENAARS as $naam): ?>
-                    <option value="<?= h($naam) ?>"><?= h($naam) ?></option>
-                <?php endforeach; ?>
-            </select>
-            <label for="taak-vervaldatum">Vervaldatum</label>
-            <input type="date" id="taak-vervaldatum" name="due">
-        </div>
-        <div class="veld veld-acties">
-            <button type="submit">Toevoegen</button>
-            <button type="button" id="taak-annuleren-knop">Annuleren</button>
-            <span id="taak-foutmelding" class="foutmelding"></span>
-        </div>
-    </form>
+    <dialog id="taak-modal">
+        <form id="taak-formulier">
+            <div class="modal-kop">
+                <h3>Nieuwe taak</h3>
+                <button type="button" id="taak-sluiten-knop" class="sluiten-knop" aria-label="Sluiten">&times;</button>
+            </div>
+
+            <div class="modal-inhoud">
+                <div class="veld">
+                    <label for="taak-titel">Taak</label>
+                    <input type="text" id="taak-titel" name="title" placeholder="Bv. VAT-aangifte doorsturen" required>
+                </div>
+
+                <div class="veld">
+                    <span class="veld-label">Type</span>
+                    <div class="segmentgroep">
+                        <label class="segment">
+                            <input type="radio" name="kind" value="once" checked>
+                            <span>Eenmalig</span>
+                        </label>
+                        <label class="segment">
+                            <input type="radio" name="kind" value="recurring">
+                            <span>Terugkerend</span>
+                        </label>
+                    </div>
+                    <p class="veld-hint" id="taak-hint-eenmalig">Verschijnt enkel op periode <?= h($period) ?>.</p>
+                    <div class="veld veld-onderaan" id="taak-eind-periode-wrap" hidden>
+                        <label for="taak-eind-periode">Terugkerend tot en met</label>
+                        <input type="month" id="taak-eind-periode" name="end_period">
+                    </div>
+                </div>
+
+                <div class="veld-rij">
+                    <div class="veld">
+                        <label for="taak-eigenaar">Eigenaar</label>
+                        <select id="taak-eigenaar" name="owner" required>
+                            <option value="" disabled selected>Kies...</option>
+                            <?php foreach (TAAK_EIGENAARS as $naam): ?>
+                                <option value="<?= h($naam) ?>"><?= h($naam) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="veld">
+                        <label for="taak-vervaldatum">Vervaldatum</label>
+                        <input type="date" id="taak-vervaldatum" name="due">
+                    </div>
+                </div>
+
+                <p class="foutmelding" id="taak-foutmelding"></p>
+            </div>
+
+            <div class="modal-voet">
+                <button type="button" id="taak-annuleren-knop" class="knop-secundair">Annuleren</button>
+                <button type="submit" class="knop-primair">Taak toevoegen</button>
+            </div>
+        </form>
+    </dialog>
 
     <table>
         <thead><tr><th>Dag</th><th>Taak</th><th>Eigenaar</th><th>Type</th><th></th></tr></thead>
@@ -210,23 +240,47 @@ document.querySelectorAll('.todo-check').forEach(cb => {
 
 // --- Taken toevoegen ---
 const taakKnop = document.getElementById('taak-toevoegen-knop');
+const taakModal = document.getElementById('taak-modal');
 const taakFormulier = document.getElementById('taak-formulier');
+const taakSluitenKnop = document.getElementById('taak-sluiten-knop');
 const taakAnnulerenKnop = document.getElementById('taak-annuleren-knop');
+const taakEindPeriodeWrap = document.getElementById('taak-eind-periode-wrap');
+const taakHintEenmalig = document.getElementById('taak-hint-eenmalig');
 const taakEindPeriode = document.getElementById('taak-eind-periode');
 const taakFoutmelding = document.getElementById('taak-foutmelding');
 
-taakKnop.addEventListener('click', () => {
-    taakFormulier.hidden = !taakFormulier.hidden;
-});
-taakAnnulerenKnop.addEventListener('click', () => {
+function taakModalOpenen() {
     taakFormulier.reset();
-    taakFormulier.hidden = true;
+    taakFormulier.querySelectorAll('.segment').forEach(seg => {
+        seg.classList.toggle('geselecteerd', seg.querySelector('input').checked);
+    });
+    taakEindPeriodeWrap.hidden = true;
+    taakHintEenmalig.hidden = false;
     taakFoutmelding.textContent = '';
+    taakModal.showModal();
+    document.getElementById('taak-titel').focus();
+}
+function taakModalSluiten() {
+    taakModal.close();
+}
+
+taakKnop.addEventListener('click', taakModalOpenen);
+taakSluitenKnop.addEventListener('click', taakModalSluiten);
+taakAnnulerenKnop.addEventListener('click', taakModalSluiten);
+// Clicking the dimmed backdrop (a click that lands on the <dialog> element itself,
+// outside the form card) closes the modal, same as the X and Annuleren.
+taakModal.addEventListener('click', (e) => {
+    if (e.target === taakModal) taakModalSluiten();
 });
+
 taakFormulier.querySelectorAll('input[name="kind"]').forEach(radio => {
     radio.addEventListener('change', () => {
+        taakFormulier.querySelectorAll('.segment').forEach(seg => {
+            seg.classList.toggle('geselecteerd', seg.querySelector('input').checked);
+        });
         const herhaald = taakFormulier.querySelector('input[name="kind"]:checked').value === 'recurring';
-        taakEindPeriode.disabled = !herhaald;
+        taakEindPeriodeWrap.hidden = !herhaald;
+        taakHintEenmalig.hidden = herhaald;
         if (!herhaald) taakEindPeriode.value = '';
     });
 });
@@ -240,6 +294,8 @@ taakFormulier.addEventListener('submit', async (e) => {
         taakFoutmelding.textContent = 'Kies een einddatum voor de herhaling.';
         return;
     }
+    const submitKnop = taakFormulier.querySelector('button[type="submit"]');
+    submitKnop.disabled = true;
     const body = new URLSearchParams({
         title: formulierData.get('title') || '',
         kind: formulierData.get('kind') || 'once',
@@ -257,11 +313,13 @@ taakFormulier.addEventListener('submit', async (e) => {
         const data = await res.json();
         if (data.error) {
             taakFoutmelding.textContent = data.error;
+            submitKnop.disabled = false;
             return;
         }
         location.reload();
     } catch (err) {
         taakFoutmelding.textContent = 'Fout: ' + err.message;
+        submitKnop.disabled = false;
     }
 });
 
