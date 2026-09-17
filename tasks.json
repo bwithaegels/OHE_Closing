@@ -1,0 +1,38 @@
+[
+    {
+        "id": "po-604003-selfmatch",
+        "day": "Pre-close",
+        "title": "Every PO on a 604003 debit line (this book year) has a matching 604003 credit line (any time)",
+        "owner": null,
+        "type": "check",
+        "check_id": "po_604003_selfmatch",
+        "csv_kind": null,
+        "todo_category": "PO NTOF",
+        "badge_source": "todo",
+        "notes": "Confirmed 2026-09-15: the matching posting lives on 604003 itself, not a separate account (Yuki nets the PO invoice debit against a credit line referencing the same PO, e.g. 'Awan - Inkooporder 1884'). Debit lines are scoped to the current book year; credit lines are checked across the account's full cached history. A description can hold multiple comma-separated PO numbers -- each is checked independently."
+    },
+    {
+        "id": "assets-postings",
+        "day": "Pre-close",
+        "title": "List postings on asset GL accounts for the closing period",
+        "owner": null,
+        "type": "check",
+        "check_id": "assets",
+        "csv_kind": null,
+        "todo_category": "VASTE ACTIVA",
+        "badge_source": "todo",
+        "notes": "Not pass/fail -- there's no way to see from Yuki whether asset details were filled in, so this just lists every posting on the confirmed asset GL accounts (204000, 214000, 230000, 240000, 240100, 241000, 241100, 271010, 261000) for the period. Check off manually once details are entered in Yuki."
+    },
+    {
+        "id": "depreciation-booked",
+        "day": "Pre-close",
+        "title": "Depreciation booked on a 63xx account for the closing period",
+        "owner": null,
+        "type": "check",
+        "check_id": "depreciation",
+        "csv_kind": null,
+        "todo_category": "AFSCHRIJVINGEN",
+        "badge_source": "check_result",
+        "notes": "Confirmed 2026-09-15: this returns a plain boolean (movement on any 63xx account for the period), stored via status.php. Badge on the calendar follows that boolean directly, not a todo checkbox. On false, adds one 'Afschrijvingen Boeken' todo entry. Uses two GLAccountBalance snapshots (period start-1 day, period end), same technique as the reporting app's month-movement calculation, handling the January fiscal-year-boundary case."
+    }
+]

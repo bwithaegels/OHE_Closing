@@ -1,0 +1,9 @@
+Options -Indexes
+
+<IfModule mod_headers.c>
+    Header set X-Robots-Tag "noindex, nofollow"
+</IfModule>
+
+<FilesMatch "\.(json|log|csv)$">
+    Require all denied
+</FilesMatch>

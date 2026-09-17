@@ -1,0 +1,101 @@
+[
+    {
+        "invoice_date": "2026-01-01",
+        "supplier": "PO1435",
+        "po_number": 1435,
+        "period": "2026-01",
+        "text": "2026-01-01 - PO1435 - 1435",
+        "checked": true,
+        "created_at": "2026-09-15T14:44:07+02:00",
+        "id": "cb5c6f7d8d0f",
+        "comment": "Kosten geboekt in 2025"
+    },
+    {
+        "invoice_date": "2026-01-14",
+        "supplier": "PO1183",
+        "po_number": 1183,
+        "period": "2026-01",
+        "text": "2026-01-14 - PO1183 - 1183",
+        "checked": true,
+        "created_at": "2026-09-15T14:44:07+02:00",
+        "id": "76e6beac8dad",
+        "comment": "Kosten geboekt in 2025"
+    },
+    {
+        "invoice_date": "2026-01-28",
+        "supplier": "PO1413",
+        "po_number": 1413,
+        "period": "2026-01",
+        "text": "2026-01-28 - PO1413 - 1413",
+        "checked": true,
+        "created_at": "2026-09-15T14:44:07+02:00",
+        "id": "72ae2536dc02",
+        "comment": "Kosten geboekt in 2025"
+    },
+    {
+        "invoice_date": "2026-05-05",
+        "supplier": "PO1570",
+        "po_number": 1570,
+        "period": "2026-05",
+        "text": "2026-05-05 - PO1570 - 1570",
+        "checked": true,
+        "created_at": "2026-09-15T15:12:18+02:00",
+        "id": "d6b6cf86f7c0",
+        "comment": "Oke geboekt"
+    },
+    {
+        "invoice_date": "2026-05-05",
+        "supplier": "PO1599",
+        "po_number": 1599,
+        "period": "2026-05",
+        "text": "2026-05-05 - PO1599 - 1599",
+        "checked": true,
+        "created_at": "2026-09-15T15:12:18+02:00",
+        "id": "5af2dc7f6d96",
+        "comment": "Oke geboekt"
+    },
+    {
+        "invoice_date": "2026-05-29",
+        "supplier": "PO1913",
+        "po_number": 1913,
+        "period": "2026-05",
+        "text": "2026-05-29 - PO1913 - 1913",
+        "checked": true,
+        "created_at": "2026-09-15T15:12:18+02:00",
+        "id": "d97a0834de19",
+        "comment": "Oke geboekt"
+    },
+    {
+        "invoice_date": "2026-06-02",
+        "supplier": "PO1708",
+        "po_number": 1708,
+        "period": "2026-06",
+        "text": "2026-06-02 - PO1708 - 1708",
+        "checked": true,
+        "created_at": "2026-09-15T15:13:46+02:00",
+        "id": "16cd1bfef59d",
+        "comment": "2 aankoopfacturen"
+    },
+    {
+        "invoice_date": "2026-06-15",
+        "supplier": "PO1414",
+        "po_number": 1414,
+        "period": "2026-06",
+        "text": "2026-06-15 - PO1414 - 1414",
+        "checked": true,
+        "created_at": "2026-09-15T15:13:46+02:00",
+        "id": "3758fcfab841",
+        "comment": "oke"
+    },
+    {
+        "invoice_date": "2026-07-02",
+        "supplier": "setup charges FW277",
+        "po_number": 277,
+        "period": "2026-07",
+        "text": "2026-07-02 - setup charges FW277 - 277",
+        "checked": true,
+        "created_at": "2026-09-15T15:25:05+02:00",
+        "id": "e77156396b70",
+        "comment": "geen order"
+    }
+]
