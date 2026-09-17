@@ -1,13 +1,13 @@
 body { font-family: system-ui, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; color: #1a1a1a; }
 [hidden] { display: none !important; }
 h1 { font-size: 1.4rem; }
-table { width: 100%; border-collapse: collapse; margin-bottom: 2rem; }
+table { width: 100%; border-collapse: collapse; margin-bottom: var(--space-6); }
 th, td { text-align: left; padding: 0.5rem; border-bottom: 1px solid #ddd; }
 button { cursor: pointer; }
 .check-result { margin-left: 0.5rem; font-size: 0.85rem; color: #555; }
 
 .todo-list { list-style: none; padding: 0; }
-.todo-list li { padding: 0.35rem 0; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.todo-list li { padding: var(--space-1) 0; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .todo-list li.checked .todo-text { text-decoration: line-through; color: #999; }
 .todo-list label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; flex: 1; min-width: 0; }
 .todo-comment { flex: 0 0 220px; font-size: 0.85rem; padding: 0.25rem 0.4rem; border: 1px solid #ddd; border-radius: 3px; }

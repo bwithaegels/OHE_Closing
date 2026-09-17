@@ -26,9 +26,9 @@ $manualTasks = manual_taken_for_period($period);
 </head>
 <body>
 
-<h1>Sluitingskalender</h1>
+<h1 class="mb-2">Sluitingskalender</h1>
 
-<form id="period-form">
+<form id="period-form" class="mb-5">
     <label for="period-select">Sluitingsperiode:</label>
     <select id="period-select" name="period">
         <?php foreach ($periods as $p): ?>
@@ -38,7 +38,7 @@ $manualTasks = manual_taken_for_period($period);
 </form>
 
 <section id="taken">
-    <div class="sectie-kop">
+    <div class="sectie-kop mb-3">
         <h2>Taken</h2>
         <button type="button" id="taak-toevoegen-knop" title="Taak toevoegen">+</button>
     </div>
@@ -162,7 +162,7 @@ $manualTasks = manual_taken_for_period($period);
 </section>
 
 <section id="todos">
-    <h2>Te controleren — periode <?= h($period) ?></h2>
+    <h2 class="mb-4">Te controleren — periode <?= h($period) ?></h2>
     <?php foreach (todo_categories() as $categorySlug):
         $category = str_replace('_', ' ', $categorySlug);
         $allEntries = todo_load($category);
@@ -175,8 +175,8 @@ $manualTasks = manual_taken_for_period($period);
         ));
         if (!$entries) continue;
     ?>
-        <h3><?= h($category) ?></h3>
-        <ul class="todo-list" data-category="<?= h($category) ?>">
+        <h3 class="mb-2"><?= h($category) ?></h3>
+        <ul class="todo-list mb-5" data-category="<?= h($category) ?>">
             <?php foreach ($entries as $entry): ?>
                 <li data-id="<?= h($entry['id']) ?>" class="<?= !empty($entry['checked']) ? 'checked' : '' ?>">
                     <label>
