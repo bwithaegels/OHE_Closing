@@ -92,7 +92,6 @@ dialog#taak-modal::backdrop { background: rgba(20,20,25,.45); }
 .foutmelding { color: #b3261e; font-size: 0.85rem; margin: 0; }
 .foutmelding:empty { display: none; }
 
-tr.afgevinkt td { text-decoration: line-through; color: #999; }
 tr.verlopen td:first-child { color: #b3261e; font-weight: 600; }
 
 /* --------------------------------------------------------- spacing --- */

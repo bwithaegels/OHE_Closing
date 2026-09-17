@@ -112,9 +112,12 @@ $manualTasks = manual_taken_for_period($period);
                 ? 'Terugkerend t/m ' . h($mtask['end_period'])
                 : 'Eenmalig';
         ?>
-            <tr class="<?= $afgevinkt ? 'afgevinkt' : '' ?> <?= $verlopen ? 'verlopen' : '' ?>" data-manual-id="<?= h($mtask['id']) ?>">
+            <tr class="<?= $verlopen ? 'verlopen' : '' ?>" data-manual-id="<?= h($mtask['id']) ?>">
                 <td><?= h($dagLabel) ?></td>
-                <td><?= h($mtask['title']) ?></td>
+                <td>
+                    <span class="badge-done taak-badge" title="Klaar" <?= $afgevinkt ? '' : 'hidden' ?>>✅</span>
+                    <?= h($mtask['title']) ?>
+                </td>
                 <td><?= h($mtask['owner']) ?></td>
                 <td><?= $typeLabel ?></td>
                 <td>
@@ -327,7 +330,7 @@ document.querySelectorAll('.taak-check').forEach(cb => {
     cb.addEventListener('change', async () => {
         const tr = cb.closest('tr');
         const id = tr.dataset.manualId;
-        tr.classList.toggle('afgevinkt', cb.checked);
+        tr.querySelector('.taak-badge').hidden = !cb.checked;
         await fetch('taak_toggle.php', {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
