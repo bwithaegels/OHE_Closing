@@ -10,9 +10,9 @@
 // false rather than erroring, which makes a missing value look like a broken login
 // instead of a config problem. Hardcoding here matches how OHE/Reporting is set up.
 return [
-    'yuki_api_key'           => '15e3621c-e73a-46c8-8d41-1ca39a43f112',
+    'yuki_api_key'           => '',
     'yuki_administration_id' => 'df088343-9e14-4135-aae7-5e63df1fb79c',
-    'password'               => '@OsakaEurope2026!*!',
+    'password'               => 'Blah',
     'debug'                  => false,
     'timezone'               => 'Europe/Brussels',
 ];
