@@ -36,6 +36,11 @@ function load_tasks(): array
     return is_array($data) ? $data : [];
 }
 
+/** The only two people using this app right now. A closed, known list beats a free-text
+ *  field -- same reasoning as groep_klanten name-matching in the reporting app. Update
+ *  here (only) if that ever changes. */
+const TAAK_EIGENAARS = ['Bjorge Withaegels', 'Sven Garcia (CFO)'];
+
 function h($value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');

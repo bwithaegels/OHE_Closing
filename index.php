@@ -4,6 +4,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/lib.php';
 require_once __DIR__ . '/todo.php';
 require_once __DIR__ . '/status.php';
+require_once __DIR__ . '/manual_taken.php';
 
 date_default_timezone_set('Europe/Brussels');
 
@@ -13,6 +14,7 @@ require_login($config);
 $tasks = load_tasks();
 $period = selected_period();
 $periods = available_closing_periods();
+$manualTasks = manual_taken_for_period($period);
 ?>
 <!doctype html>
 <html lang="nl">
@@ -36,10 +38,63 @@ $periods = available_closing_periods();
 </form>
 
 <section id="taken">
-    <h2>Taken</h2>
+    <div class="sectie-kop">
+        <h2>Taken</h2>
+        <button type="button" id="taak-toevoegen-knop" title="Taak toevoegen">+</button>
+    </div>
+
+    <form id="taak-formulier" hidden>
+        <div class="veld">
+            <label for="taak-titel">Taak</label>
+            <input type="text" id="taak-titel" name="title" required>
+        </div>
+        <div class="veld veld-inline">
+            <label><input type="radio" name="kind" value="once" checked> Eenmalig (enkel periode <?= h($period) ?>)</label>
+            <label><input type="radio" name="kind" value="recurring"> Terugkerend tot en met</label>
+            <input type="month" id="taak-eind-periode" name="end_period" disabled>
+        </div>
+        <div class="veld veld-inline">
+            <label for="taak-eigenaar">Eigenaar</label>
+            <select id="taak-eigenaar" name="owner" required>
+                <option value="" disabled selected>Kies...</option>
+                <?php foreach (TAAK_EIGENAARS as $naam): ?>
+                    <option value="<?= h($naam) ?>"><?= h($naam) ?></option>
+                <?php endforeach; ?>
+            </select>
+            <label for="taak-vervaldatum">Vervaldatum</label>
+            <input type="date" id="taak-vervaldatum" name="due">
+        </div>
+        <div class="veld veld-acties">
+            <button type="submit">Toevoegen</button>
+            <button type="button" id="taak-annuleren-knop">Annuleren</button>
+            <span id="taak-foutmelding" class="foutmelding"></span>
+        </div>
+    </form>
+
     <table>
-        <thead><tr><th>Dag</th><th>Taak</th><th>Type</th><th></th></tr></thead>
+        <thead><tr><th>Dag</th><th>Taak</th><th>Eigenaar</th><th>Type</th><th></th></tr></thead>
         <tbody>
+        <?php foreach ($manualTasks as $mtask):
+            $afgevinkt = in_array($period, $mtask['checked_periods'] ?? [], true);
+            $verlopen = !$afgevinkt && !empty($mtask['due']) && $mtask['due'] < date('Y-m-d');
+            $dagLabel = $mtask['due'] !== '' ? 'Voor ' . $mtask['due'] : '—';
+            $typeLabel = ($mtask['kind'] ?? 'once') === 'recurring'
+                ? 'Terugkerend t/m ' . h($mtask['end_period'])
+                : 'Eenmalig';
+        ?>
+            <tr class="<?= $afgevinkt ? 'afgevinkt' : '' ?> <?= $verlopen ? 'verlopen' : '' ?>" data-manual-id="<?= h($mtask['id']) ?>">
+                <td><?= h($dagLabel) ?></td>
+                <td><?= h($mtask['title']) ?></td>
+                <td><?= h($mtask['owner']) ?></td>
+                <td><?= $typeLabel ?></td>
+                <td>
+                    <label>
+                        <input type="checkbox" class="taak-check" <?= $afgevinkt ? 'checked' : '' ?>>
+                        Klaar
+                    </label>
+                </td>
+            </tr>
+        <?php endforeach; ?>
         <?php foreach ($tasks as $task): ?>
             <tr data-task-id="<?= h($task['id']) ?>">
                 <td><?= h($task['day']) ?></td>
@@ -58,6 +113,7 @@ $periods = available_closing_periods();
                     <?php endif; ?>
                     <?= h($task['title']) ?>
                 </td>
+                <td><?= h($task['owner'] ?? '—') ?></td>
                 <td><?= h($task['type']) ?></td>
                 <td>
                     <?php if ($task['type'] === 'check'): ?>
@@ -148,6 +204,76 @@ document.querySelectorAll('.todo-check').forEach(cb => {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: `category=${encodeURIComponent(category)}&id=${encodeURIComponent(id)}`,
+        });
+    });
+});
+
+// --- Taken toevoegen ---
+const taakKnop = document.getElementById('taak-toevoegen-knop');
+const taakFormulier = document.getElementById('taak-formulier');
+const taakAnnulerenKnop = document.getElementById('taak-annuleren-knop');
+const taakEindPeriode = document.getElementById('taak-eind-periode');
+const taakFoutmelding = document.getElementById('taak-foutmelding');
+
+taakKnop.addEventListener('click', () => {
+    taakFormulier.hidden = !taakFormulier.hidden;
+});
+taakAnnulerenKnop.addEventListener('click', () => {
+    taakFormulier.reset();
+    taakFormulier.hidden = true;
+    taakFoutmelding.textContent = '';
+});
+taakFormulier.querySelectorAll('input[name="kind"]').forEach(radio => {
+    radio.addEventListener('change', () => {
+        const herhaald = taakFormulier.querySelector('input[name="kind"]:checked').value === 'recurring';
+        taakEindPeriode.disabled = !herhaald;
+        if (!herhaald) taakEindPeriode.value = '';
+    });
+});
+
+taakFormulier.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    taakFoutmelding.textContent = '';
+    const formulierData = new FormData(taakFormulier);
+    const herhaald = formulierData.get('kind') === 'recurring';
+    if (herhaald && !formulierData.get('end_period')) {
+        taakFoutmelding.textContent = 'Kies een einddatum voor de herhaling.';
+        return;
+    }
+    const body = new URLSearchParams({
+        title: formulierData.get('title') || '',
+        kind: formulierData.get('kind') || 'once',
+        end_period: herhaald ? formulierData.get('end_period') : '',
+        owner: formulierData.get('owner') || '',
+        due: formulierData.get('due') || '',
+        period: currentPeriod(),
+    });
+    try {
+        const res = await fetch('taak_toevoegen.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: body.toString(),
+        });
+        const data = await res.json();
+        if (data.error) {
+            taakFoutmelding.textContent = data.error;
+            return;
+        }
+        location.reload();
+    } catch (err) {
+        taakFoutmelding.textContent = 'Fout: ' + err.message;
+    }
+});
+
+document.querySelectorAll('.taak-check').forEach(cb => {
+    cb.addEventListener('change', async () => {
+        const tr = cb.closest('tr');
+        const id = tr.dataset.manualId;
+        tr.classList.toggle('afgevinkt', cb.checked);
+        await fetch('taak_toggle.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `id=${encodeURIComponent(id)}&period=${encodeURIComponent(currentPeriod())}`,
         });
     });
 });

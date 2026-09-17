@@ -11,3 +11,26 @@ button { cursor: pointer; }
 .todo-list label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; flex: 1; min-width: 0; }
 .todo-comment { flex: 0 0 220px; font-size: 0.85rem; padding: 0.25rem 0.4rem; border: 1px solid #ddd; border-radius: 3px; }
 .badge-done { margin-right: 0.35rem; }
+
+.sectie-kop { display: flex; align-items: center; gap: 0.6rem; }
+.sectie-kop h2 { margin: 0; }
+#taak-toevoegen-knop {
+    width: 1.6rem; height: 1.6rem; line-height: 1; border-radius: 50%;
+    border: 1px solid #ccc; background: #fff; font-size: 1.1rem; padding: 0;
+}
+#taak-toevoegen-knop:hover { background: #f0f0f0; }
+
+#taak-formulier {
+    border: 1px solid #ddd; border-radius: 6px; padding: 0.8rem 1rem;
+    margin: 0.6rem 0 1rem; display: flex; flex-direction: column; gap: 0.6rem;
+    background: #fafafa;
+}
+#taak-formulier .veld { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+#taak-formulier .veld-inline { font-size: 0.9rem; }
+#taak-formulier label { display: flex; align-items: center; gap: 0.35rem; }
+#taak-formulier input[type="text"] { flex: 1; min-width: 200px; padding: 0.3rem 0.5rem; }
+#taak-formulier .veld-acties { justify-content: flex-start; }
+.foutmelding { color: #b3261e; font-size: 0.85rem; }
+
+tr.afgevinkt td { text-decoration: line-through; color: #999; }
+tr.verlopen td:first-child { color: #b3261e; font-weight: 600; }
