@@ -12,7 +12,7 @@
 return [
     'yuki_api_key'           => '',
     'yuki_administration_id' => 'df088343-9e14-4135-aae7-5e63df1fb79c',
-    'password'               => 'Blah',
+    'password'               => '',
     'debug'                  => false,
     'timezone'               => 'Europe/Brussels',
 ];
